@@ -1,0 +1,17 @@
+{
+  "name": "lobster-escrow",
+  "version": "1.0.0",
+  "description": "Verifiable Agent-to-Agent Escrow Executor on OKX Onchain OS",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}
