@@ -1,0 +1,10 @@
+{
+  "summary": "Multiple large BTC wallet movements were detected in the past hour.",
+  "signals": [
+    "1200 BTC transferred from exchange-linked wallet",
+    "830 BTC consolidated into fresh addresses",
+    "Dormant wallet reactivated after 180 days"
+  ],
+  "sources": ["Glassnode", "Arkham", "Whale Alert"],
+  "generated_at": "2026-03-18T12:00:00Z"
+}
