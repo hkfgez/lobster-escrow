@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DeliveryReport",
+  "type": "object",
+  "required": ["summary", "signals", "sources", "generated_at"],
+  "properties": {
+    "summary": { "type": "string" },
+    "signals": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "generated_at": { "type": "string" }
+  }
+}
