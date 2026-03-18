@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VerificationResult",
+  "type": "object",
+  "required": ["status", "checks", "reason"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["verified", "rejected"]
+    },
+    "checks": {
+      "type": "object",
+      "required": [
+        "deadline_valid",
+        "fields_complete",
+        "schema_valid",
+        "sources_approved"
+      ],
+      "properties": {
+        "deadline_valid": { "type": "boolean" },
+        "fields_complete": { "type": "boolean" },
+        "schema_valid": { "type": "boolean" },
+        "sources_approved": { "type": "boolean" }
+      }
+    },
+    "reason": { "type": "string" }
+  }
+}
