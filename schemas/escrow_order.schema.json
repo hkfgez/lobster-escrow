@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EscrowOrder",
+  "type": "object",
+  "required": [
+    "task_type",
+    "budget_limit",
+    "delivery_deadline_minutes",
+    "required_fields",
+    "accepted_sources",
+    "settlement_rule",
+    "refund_rule"
+  ],
+  "properties": {
+    "task_type": { "type": "string" },
+    "budget_limit": { "type": "number" },
+    "delivery_deadline_minutes": { "type": "number" },
+    "required_fields": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "accepted_sources": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "settlement_rule": { "type": "string" },
+    "refund_rule": { "type": "string" },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
