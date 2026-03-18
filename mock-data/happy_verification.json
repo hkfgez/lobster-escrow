@@ -1,0 +1,10 @@
+{
+  "status": "verified",
+  "checks": {
+    "deadline_valid": true,
+    "fields_complete": true,
+    "schema_valid": true,
+    "sources_approved": true
+  },
+  "reason": "All verification checks passed."
+}
