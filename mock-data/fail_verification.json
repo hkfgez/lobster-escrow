@@ -1,0 +1,10 @@
+{
+  "status": "rejected",
+  "checks": {
+    "deadline_valid": true,
+    "fields_complete": true,
+    "schema_valid": true,
+    "sources_approved": false
+  },
+  "reason": "Delivery failed verification because one or more sources are not approved under the escrow order."
+}
