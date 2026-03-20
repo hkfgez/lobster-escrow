@@ -98,3 +98,15 @@ contract LobsterEscrow {
         IERC20(order.token).transfer(order.buyerAgent, order.budget + order.stakeAmount);
     }
 }
+// Anti-SPOF (防单点故障与死机保护)：如果 Seller Agent 宕机或超时未交付
+    function timeoutRefund(bytes32 _orderId) external {
+        Order storage order = escrows[_orderId];
+        require(order.state == EscrowState.Accepted, "Invalid state");
+        require(block.timestamp > order.deadline, "Delivery deadline has passed");
+        
+        // 状态机强制介入：不可篡改的链上超时退款
+        order.state = EscrowState.Refunded;
+        IERC20(order.token).transfer(order.buyerAgent, order.budget);
+        // 超时属于违约，也可以选择扣除部分 stake，此处按原路退回质押金处理
+        IERC20(order.token).transfer(order.sellerAgent, order.stakeAmount); 
+    }
