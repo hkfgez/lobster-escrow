@@ -21,8 +21,8 @@ But when one Agent wants to **buy a service** from another Agent, a critical lay
 
 Agents still cannot reliably **transact under rules**.
 
-In practice, a Buyer Agent and a Seller Agent need more than “task completion”.  
-They need a machine-enforced transaction framework with four core components:
+In practice, a Buyer Agent and a Seller Agent need more than task completion.  
+They need a machine-enforced transaction framework with five core components:
 
 - **Escrow** — funds are locked before delivery, not paid upfront
 - **Verification** — output is accepted by explicit rules, not subjective judgment
@@ -58,6 +58,7 @@ Lobster Escrow does not merely “use” OKX Onchain OS and Claw.
 Its core workflow depends on them.
 
 ### Claw as contract compiler
+
 Claw is not used here as a generic chat interface.  
 It acts as an **intent compiler** that transforms natural-language service requests into a machine-readable **Escrow Order**.
 
@@ -79,6 +80,7 @@ Without Claw, the system only has vague human intent.
 With Claw, it obtains a machine-executable transaction contract.
 
 ### OKX Onchain OS as native workflow execution layer
+
 OKX Onchain OS is not an outer shell here.  
 It is the execution substrate that carries the escrow workflow as a **stateful transaction pipeline**, rather than as a loose chain of scripts.
 
@@ -90,6 +92,7 @@ Without OKX Onchain OS, this project would degrade into isolated scripts and man
 With OKX Onchain OS, it becomes a native workflow for escrow, verification, settlement, refund, and audit.
 
 **In short:**
+
 - Without **Claw**, there is no executable escrow contract
 - Without **OKX Onchain OS**, there is no native settlement state machine
 
@@ -105,6 +108,7 @@ Lobster Escrow is built for a real and recurring problem:
 > How can one Agent safely purchase a result from another Agent without relying on subjective trust?
 
 ### Target users
+
 This project is designed for:
 
 - **Buyer Agents** that need to purchase structured results
@@ -112,6 +116,7 @@ This project is designed for:
 - **Builders** who want a reusable escrow / verification / settlement layer for Agent marketplaces or service workflows
 
 ### Immediately usable scenarios
+
 Although the demo focuses on one BTC report scenario, the workflow is reusable across multiple service types:
 
 - **Research delivery**  
@@ -135,6 +140,7 @@ To keep the system clear, reproducible, and easy to evaluate, the current implem
 **A Buyer Agent purchases a BTC on-chain whale activity report from a Seller Agent.**
 
 The Buyer specifies:
+
 - delivery deadline
 - budget limit
 - required output fields
@@ -166,8 +172,8 @@ The Verification Engine checks items such as:
 
 This is the key design shift:
 
-**Lobster Escrow does not rely on human interpretation after delivery.  
-It turns service requirements into machine-verifiable settlement conditions.**
+**Lobster Escrow does not rely on human interpretation after delivery.**  
+**It turns service requirements into machine-verifiable settlement conditions.**
 
 ---
 
@@ -209,6 +215,7 @@ Most demos only prove that a workflow can succeed.
 Lobster Escrow proves both that it can **succeed correctly** and **fail correctly**.
 
 ### Happy Path
+
 When the Seller Agent submits a valid delivery that satisfies all release rules:
 
 **Draft → Funded → Accepted → Delivered → Verified → Settled**
@@ -216,6 +223,7 @@ When the Seller Agent submits a valid delivery that satisfies all release rules:
 Funds are automatically released to the Seller Agent.
 
 ### Fail Path
+
 When the Seller Agent submits a delivery that violates rules — for example, by using a source outside the approved whitelist:
 
 **Draft → Funded → Accepted → Delivered → Refunded**
@@ -224,8 +232,8 @@ Payment is rejected, funds are automatically refunded to the Buyer Agent, and an
 
 This is one of the most important aspects of the project:
 
-**`Refunded` is not an exception path.  
-It is a first-class terminal state of programmable trust.**
+**`Refunded` is not an exception path.**  
+**It is a first-class terminal state of programmable trust.**
 
 That means Lobster Escrow is not designed merely to “complete a transaction”.  
 It is designed to **judge whether a transaction deserves completion**.
@@ -239,13 +247,16 @@ The innovation of Lobster Escrow is not simply “adding escrow to agents”.
 It has three distinct layers of novelty:
 
 ### 1. Agents become economic entities, not only task executors
+
 Most current agent systems stop at “doing work”.  
 Lobster Escrow moves one step further: enabling Agents to **exchange value under rules**.
 
 ### 2. Natural-language service intent becomes a machine-verifiable contract
+
 Instead of leaving service acceptance to human interpretation, Lobster Escrow compiles human requests into explicit, machine-checkable escrow conditions.
 
 ### 3. Refund is institutionalized as a valid terminal state
+
 Most systems only demonstrate successful completion.  
 Lobster Escrow also demonstrates correct refusal, correct refund, and correct audit.
 
@@ -265,15 +276,7 @@ This makes the project less like a feature demo and more like a minimal **Agent 
 │   ├── overview.md
 │   ├── reproducibility.md
 │   └── scoring-alignment.md
-├── examples/
-│   ├── escrow_order.example.json
-│   ├── delivery_report.pass.json
-│   ├── delivery_report.fail.json
-│   ├── verification_result.pass.json
-│   ├── verification_result.fail.json
-│   ├── settlement_receipt.json
-│   ├── refund_receipt.json
-│   └── audit_log.example.json
+├── mock-data/
 ├── prompts/
 │   ├── system.md
 │   ├── claw_intent_parser.md
@@ -291,12 +294,9 @@ This makes the project less like a feature demo and more like a minimal **Agent 
 │   ├── engine/
 │   ├── index.ts
 │   └── types.ts
-├── screenshots/
-├── videos/
 ├── README.md
 └── package.json
-
----
+```
 
 Reproducibility
 
@@ -336,7 +336,7 @@ Happy Path demo
 
 Fail Path demo
 
-Example JSON payloads
+Mock data
 
 README reproduction steps
 
@@ -350,7 +350,7 @@ Inspect prompts/ to understand role definitions and intent compilation
 
 Inspect schemas/ to understand order, delivery, verification, and audit structures
 
-Review examples/ for pass / fail sample payloads
+Review mock-data/ for sample payloads
 
 Review demo/happy-path.md and demo/fail-path.md
 
@@ -362,6 +362,8 @@ The project goal is not only to describe the idea, but to make it:
 
 reproducible at the workflow level and understandable at the decision level
 
+Example escrow order
+```json
 {
   "task_type": "btc_whale_report",
   "budget_limit": 30,
@@ -371,7 +373,9 @@ reproducible at the workflow level and understandable at the decision level
   "settlement_rule": "release_if_all_checks_pass",
   "refund_rule": "refund_if_any_required_check_fails"
 }
-
+```
+Example failed verification result
+```json
 {
   "deadline_valid": true,
   "fields_complete": true,
@@ -380,7 +384,7 @@ reproducible at the workflow level and understandable at the decision level
   "decision": "REFUNDED",
   "reason": "UNAPPROVED_SOURCE"
 }
----
+```
 Why this matters
 
 If AI Agents are going to enter real economic activity, they will need more than task execution.
