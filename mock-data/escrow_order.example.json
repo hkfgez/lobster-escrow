@@ -1,0 +1,22 @@
+{
+  "order_id": "escrow_001",
+  "task_type": "btc_whale_report",
+  "budget_limit": 30,
+  "currency": "USDT",
+  "delivery_deadline": "10m",
+  "required_fields": [
+    "signal_1",
+    "signal_2",
+    "signal_3"
+  ],
+  "accepted_sources": [
+    "approved_source_a",
+    "approved_source_b"
+  ],
+  "settlement_rule": "release_if_all_checks_pass",
+  "refund_rule": "refund_if_any_required_check_fails",
+  "buyer_agent_id": "buyer_agent_001",
+  "seller_agent_id": "seller_agent_001",
+  "status": "Funded",
+  "created_at": "2026-03-16T08:20:00Z"
+}
