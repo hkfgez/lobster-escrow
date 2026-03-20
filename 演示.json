@@ -1,0 +1,7 @@
+{
+  "verification_id": "V-FAIL-001",
+  "verification_status": "REJECTED",
+  "failed_rules": ["sources_approved"],
+  "reason": "Data source 'X (Twitter)' is not in the strict allowlist [OKX_Explorer, Whale_Alert]",
+  "action": "TRIGGER_REFUND"
+}
