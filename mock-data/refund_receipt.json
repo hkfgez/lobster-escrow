@@ -1,0 +1,10 @@
+{
+  "receipt_id": "refund_001",
+  "order_id": "escrow_001",
+  "decision": "REFUNDED",
+  "amount_refunded": 30,
+  "currency": "USDT",
+  "refunded_to": "buyer_agent_001",
+  "refunded_at": "2026-03-16T08:28:25Z",
+  "status": "completed"
+}
