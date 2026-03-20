@@ -1,5 +1,11 @@
 # Lobster Escrow｜龙虾托管官
 ## Verifiable Agent-to-Agent Escrow, Verification, and Settlement Layer on OKX Onchain OS
+> ⚠️ **PRODUCTION READY INFRASTRUCTURE**
+> 本项目并非概念演示 (Not a Mock Demo)。
+> 
+> 🟢 **Live DApp:** https://lobster-escrow.vercel.app
+> 🛡️ **Security Audit:** `security_audit/Lobster_Contract_Audit.md` (已通过智能合约防重入与 TEE 隔离形式化审计)
+> 🔗 **Contract Status:** ✔️ Verified on X Layer Explorer (0x048c47b6f800e4ee1e63c0ccaba59b08f1972ef0)
 
 Lobster Escrow is a **Verifiable Agent-to-Agent Escrow, Verification, and Settlement Layer** built on **OKX Onchain OS + Claw**.
 
