@@ -1,0 +1,13 @@
+{
+  "order_id": "escrow_001",
+  "verification_id": "verify_001",
+  "deadline_valid": true,
+  "fields_complete": true,
+  "schema_valid": true,
+  "sources_approved": true,
+  "settlement_rule_matched": true,
+  "refund_rule_triggered": false,
+  "decision": "SETTLED",
+  "reason": "All required checks passed.",
+  "verified_at": "2026-03-16T08:28:00Z"
+}
