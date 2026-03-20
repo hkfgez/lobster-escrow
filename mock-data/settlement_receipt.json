@@ -1,0 +1,10 @@
+{
+  "receipt_id": "settle_001",
+  "order_id": "escrow_001",
+  "decision": "SETTLED",
+  "amount_released": 30,
+  "currency": "USDT",
+  "released_to": "seller_agent_001",
+  "released_at": "2026-03-16T08:28:05Z",
+  "status": "completed"
+}
