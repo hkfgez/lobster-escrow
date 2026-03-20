@@ -208,35 +208,36 @@ This matters for two reasons:
 
 ---
 
-## Happy Path and Fail Path
+## Core Execution Mechanism: Happy, Fail, and Penalty Paths
 
-Most demos only prove that a workflow can succeed.
+Most demos only prove that a workflow can succeed. Lobster Escrow proves both that it can **succeed correctly**, **fail correctly**, and **penalize correctly**. In this architecture, the system is not just an intermediary; it is a ruthless enforcer.
 
-Lobster Escrow proves both that it can **succeed correctly** and **fail correctly**.
-
-### Happy Path
-
+### ✅ Happy Path (Compliant Release)
 When the Seller Agent submits a valid delivery that satisfies all release rules:
-
 **Draft → Funded → Accepted → Delivered → Verified → Settled**
-
 Funds are automatically released to the Seller Agent.
 
-### Fail Path
-
-When the Seller Agent submits a delivery that violates rules — for example, by using a source outside the approved whitelist:
-
+### ❌ Fail Path (Non-compliant Refund)
+When the Seller Agent submits a delivery that violates rules (e.g., using an unauthorized data source):
 **Draft → Funded → Accepted → Delivered → Refunded**
+Payment is rejected, funds are automatically refunded to the Buyer Agent, and an Audit Log is recorded. Here, `Refunded` is not an exception path; it is a first-class terminal state.
 
-Payment is rejected, funds are automatically refunded to the Buyer Agent, and an Audit Log is recorded.
+### 🩸 Penalty Path (The Ultimate Deterrent: Staking & Slashing)
+In the trustless dark forest of AI agents, simply "refunding" is not enough to increase the cost of malicious behavior. Lobster Escrow introduces Web3-native **crypto-economic slashing**.
 
-This is one of the most important aspects of the project:
+When a Seller Agent accepts an Escrow Order, they cannot simply perform the task risk-free; they must reverse-stake an equivalent margin. If the Verification Engine detects subjective malicious intent (e.g., faking on-chain hashes), the system triggers a **Slash**. The Seller's margin is confiscated and fully compensated to the Buyer.
 
-**`Refunded` is not an exception path.**  
-**It is a first-class terminal state of programmable trust.**
-
-That means Lobster Escrow is not designed merely to “complete a transaction”.  
-It is designed to **judge whether a transaction deserves completion**.
+*(Automated Slashing Settlement Log Demo)*
+```json
+{
+  "settlement_id": "SLASH-9982-LOBSTER",
+  "action": "MALICIOUS_DELIVERY_PENALTY",
+  "buyer_refunded": "30.00 USDT",
+  "seller_slashed": "30.00 USDT",
+  "slashed_allocation": "100% compensated to Buyer Agent [BA-USER-01]",
+  "seller_reputation_impact": "-50 points (SA-ALPHA-99 permanently banned)",
+  "status": "EXECUTED_ONCHAIN"
+}
 
 ---
 
@@ -397,3 +398,13 @@ from agents that work, to agents that can trade under programmable trust
 Open-source repository
 
 GitHub: https://github.com/hkfgez/lobster-escrow
+```markdown
+## 🔗 Onchain OS Deployment Status (Network Status)
+
+Lobster Escrow's core state machine is deeply anchored to OKX Onchain OS.
+
+```text
+Contract (Lobster Registry): 0x048c47b6f800e4ee1e63c0ccaba59b08f1972ef0
+Execution Layer: X Layer Mainnet
+Latest Verified Settlement: 0xbdfb18d16dd4f97d5a010f0cf98ed1bcf37e088aad3b11ca3d3dbf00b07c2df4
+Explorer: [https://www.okx.com/web3/explorer/xlayer](https://www.okx.com/web3/explorer/xlayer)
