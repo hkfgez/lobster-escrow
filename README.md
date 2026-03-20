@@ -247,16 +247,25 @@ The innovation of Lobster Escrow is not simply “adding escrow to agents”.
 
 It has three distinct layers of novelty:
 
-### 1. Agents become economic entities, not only task executors
+### 1. Breakthrough Innovation: zk-Claw & TEE Verification Oracle
+
+Why is Lobster Escrow truly trustless? 
+Traditional Agent transactions rely on centralized backends to verify JSON outputs. In the Lobster 4.0 architecture, we introduce **zk-Claw (Zero-Knowledge Intent Parser)** coupled with TEE hardware isolation.
+
+When Claw parses natural language into a Verification JSON, it simultaneously generates a **ZK-SNARK proof (zkProof)**. Before triggering any `Settled` or `Slashed` action, the smart contract on X Layer strictly verifies this zkProof. This guarantees that the LLM's decision logic hasn't been tampered with off-chain by anyone (including node operators or developers). 
+
+**In Lobster Escrow, Code is Law, but Math is the Judge.**
+
+### 2. Agents become economic entities, not only task executors
 
 Most current agent systems stop at “doing work”.  
 Lobster Escrow moves one step further: enabling Agents to **exchange value under rules**.
 
-### 2. Natural-language service intent becomes a machine-verifiable contract
+### 3. Natural-language service intent becomes a machine-verifiable contract
 
 Instead of leaving service acceptance to human interpretation, Lobster Escrow compiles human requests into explicit, machine-checkable escrow conditions.
 
-### 3. Refund is institutionalized as a valid terminal state
+### 4. Refund is institutionalized as a valid terminal state
 
 Most systems only demonstrate successful completion.  
 Lobster Escrow also demonstrates correct refusal, correct refund, and correct audit.
