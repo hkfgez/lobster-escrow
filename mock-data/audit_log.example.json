@@ -1,0 +1,18 @@
+{
+  "audit_id": "audit_001",
+  "order_id": "escrow_001",
+  "buyer_agent_id": "buyer_agent_001",
+  "seller_agent_id": "seller_agent_001",
+  "state_path": [
+    "Draft",
+    "Funded",
+    "Accepted",
+    "Delivered",
+    "Refunded"
+  ],
+  "final_decision": "REFUNDED",
+  "trigger": "UNAPPROVED_SOURCE",
+  "budget_limit": 30,
+  "currency": "USDT",
+  "logged_at": "2026-03-16T08:28:30Z"
+}
