@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-/**
- * @title LobsterEscrow - Agent-to-Agent Programmable Trust Layer
- * @dev Deployed on OKX Onchain OS (X Layer)
- */
 interface IERC20 {
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
     function transfer(address recipient, uint256 amount) external returns (bool);
 }
 
 contract LobsterEscrow {
-    address public arbiterEngine; // The Verification Engine (Claw/TEE Oracle)
+    address public treasuryDAO; // 龙虾协议的国库（收手续费的地方）
+    address public teeEnclaveKey; // TEE 硬件隔离环境的公钥
+    uint256 public constant PROTOCOL_FEE_BPS = 200; // 协议抽水 2% (200 basis points)
     
     enum EscrowState { Draft, Funded, Accepted, Delivered, Settled, Refunded, Slashed }
 
@@ -20,25 +18,20 @@ contract LobsterEscrow {
         address sellerAgent;
         address token;
         uint256 budget;
-        uint256 stakeAmount; // Seller's skin in the game
+        uint256 stakeAmount;
         EscrowState state;
-        bytes32 verificationRuleHash; // ZK/TEE proof verification hash
     }
 
     mapping(bytes32 => Order) public escrows;
 
-    modifier onlyArbiter() {
-        require(msg.sender == arbiterEngine, "Only Verification Engine can call");
-        _;
+    constructor(address _teeKey) {
+        treasuryDAO = msg.sender;
+        teeEnclaveKey = _teeKey; // 部署时绑定 TEE 的公钥，确保结果不可伪造
     }
 
-    constructor() {
-        arbiterEngine = msg.sender; // In production, this is the TEE/Oracle address
-    }
-
-    // Buyer creates order and locks funds
-    function createEscrow(bytes32 _orderId, address _token, uint256 _budget, bytes32 _ruleHash) external {
-        require(escrows[_orderId].buyerAgent == address(0), "Order exists");
+    // 买家建单
+    function createEscrow(bytes32 _orderId, address _token, uint256 _budget) external {
+        require(escrows[_orderId].buyerAgent == address(0), "Exists");
         IERC20(_token).transferFrom(msg.sender, address(this), _budget);
         
         escrows[_orderId] = Order({
@@ -46,49 +39,62 @@ contract LobsterEscrow {
             sellerAgent: address(0),
             token: _token,
             budget: _budget,
-            stakeAmount: _budget, // 1:1 Stake required
-            state: EscrowState.Funded,
-            verificationRuleHash: _ruleHash
+            stakeAmount: _budget, // 要求卖家 1:1 质押
+            state: EscrowState.Funded
         });
     }
 
-    // Seller accepts order and locks stake (The Penalty Path foundation)
+    // 卖家接单并质押保证金
     function acceptEscrow(bytes32 _orderId) external {
         Order storage order = escrows[_orderId];
-        require(order.state == EscrowState.Funded, "Invalid state");
-        
+        require(order.state == EscrowState.Funded, "Invalid");
         IERC20(order.token).transferFrom(msg.sender, address(this), order.stakeAmount);
         order.sellerAgent = msg.sender;
         order.state = EscrowState.Accepted;
     }
 
-    // Happy Path: Verification passes, funds + stake released to Seller
-    function settle(bytes32 _orderId, bytes calldata _zkProof) external onlyArbiter {
-        Order storage order = escrows[_orderId];
-        require(order.state == EscrowState.Accepted, "Not in Accepted state");
-        // ... ZK Proof verification logic would go here ...
-        
-        order.state = EscrowState.Settled;
-        IERC20(order.token).transfer(order.sellerAgent, order.budget + order.stakeAmount);
+    // 内部验证 TEE 签名
+    function _verifyTEESignature(bytes32 _orderId, string memory _status, uint8 v, bytes32 r, bytes32 s) internal view {
+        bytes32 messageHash = keccak256(abi.encodePacked(_orderId, _status));
+        bytes32 ethSignedMessageHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash));
+        require(ecrecover(ethSignedMessageHash, v, r, s) == teeEnclaveKey, "Invalid TEE Signature! Tampering detected.");
     }
 
-    // Fail Path: Verification fails gracefully, refund buyer, return stake to seller
-    function refund(bytes32 _orderId) external onlyArbiter {
+    // Happy Path: TEE 验证通过，自动抽水并打款
+    function settle(bytes32 _orderId, uint8 v, bytes32 r, bytes32 s) external {
+        _verifyTEESignature(_orderId, "SUCCESS_COMPLIANT", v, r, s);
         Order storage order = escrows[_orderId];
-        require(order.state == EscrowState.Accepted, "Not in Accepted state");
+        require(order.state == EscrowState.Accepted, "Invalid");
+        
+        order.state = EscrowState.Settled;
+        
+        // Tokenomics: 计算 2% 协议抽水
+        uint256 fee = (order.budget * PROTOCOL_FEE_BPS) / 10000;
+        uint256 sellerPayout = order.budget - fee;
+
+        IERC20(order.token).transfer(treasuryDAO, fee); // 利润归入国库
+        IERC20(order.token).transfer(order.sellerAgent, sellerPayout + order.stakeAmount); // 剩余钱+保证金给卖家
+    }
+
+    // Fail Path: 退款
+    function refund(bytes32 _orderId, uint8 v, bytes32 r, bytes32 s) external {
+        _verifyTEESignature(_orderId, "FAILED_VERIFICATION_REFUNDED", v, r, s);
+        Order storage order = escrows[_orderId];
+        require(order.state == EscrowState.Accepted, "Invalid");
         
         order.state = EscrowState.Refunded;
         IERC20(order.token).transfer(order.buyerAgent, order.budget);
         IERC20(order.token).transfer(order.sellerAgent, order.stakeAmount);
     }
 
-    // Penalty Path: Malicious behavior detected, slash seller's stake, give to buyer
-    function slash(bytes32 _orderId) external onlyArbiter {
+    // Penalty Path: 作恶罚没
+    function slash(bytes32 _orderId, uint8 v, bytes32 r, bytes32 s) external {
+        _verifyTEESignature(_orderId, "MALICIOUS_DELIVERY_PENALTY", v, r, s);
         Order storage order = escrows[_orderId];
-        require(order.state == EscrowState.Accepted, "Not in Accepted state");
+        require(order.state == EscrowState.Accepted, "Invalid");
         
         order.state = EscrowState.Slashed;
-        // Buyer gets their budget back PLUS the seller's stake
+        // 质押金全扣，全额补偿给买家
         IERC20(order.token).transfer(order.buyerAgent, order.budget + order.stakeAmount);
     }
 }
