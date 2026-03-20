@@ -298,7 +298,7 @@ This makes the project less like a feature demo and more like a minimal **Agent 
 └── package.json
 ```
 
-Reproducibility
+## Reproducibility
 
 This repository is intended to be reproducible not only at the demo level, but at the decision level.
 
@@ -316,53 +316,41 @@ how settlement or refund is chosen
 
 how the audit trail is produced
 
-Public reproducibility assets
+### Public reproducibility assets
 
 The repository includes:
-
-Prompt templates
-
-Claw compilation logic
-
-Escrow Order schema
-
-Delivery schema
-
-Verification rules
-
-Escrow state machine
-
-Happy Path demo
-
-Fail Path demo
-
-Mock data
+- **Prompt templates**
+- **Claw compilation logic**
+- **Escrow Order schema**
+- **Delivery schema**
+- **Verification rules**
+- **Escrow state machine**
+- **Happy Path demo**
+- **Fail Path demo**
+- **Mock data (escrow orders, delivery reports, verification results, audit logs, settlement/refund receipts)**
+- **README reproduction steps**
+- **Open-source implementation**
 
 README reproduction steps
 
 Open-source implementation
 
-Reproduction steps
+### Reproduction steps
 
-Read docs/overview.md and docs/architecture.md
-
-Inspect prompts/ to understand role definitions and intent compilation
-
-Inspect schemas/ to understand order, delivery, verification, and audit structures
-
-Review mock-data/ for sample payloads
-
-Review demo/happy-path.md and demo/fail-path.md
-
-Run the TypeScript workflow in src/
-
-Compare resulting state transitions and audit outputs
+1. Read `docs/overview.md` and `docs/architecture.md`
+2. Inspect `prompts/` to understand role definitions and intent compilation
+3. Inspect `schemas/` to understand order, delivery, verification, and audit structures
+4. Review `mock-data/` for sample payloads
+5. Review `demo/happy-path.md` and `demo/fail-path.md`
+6. Run the TypeScript workflow in `src/`
+7. Compare resulting state transitions and audit outputs
 
 The project goal is not only to describe the idea, but to make it:
 
 reproducible at the workflow level and understandable at the decision level
 
-Example escrow order
+## Example escrow order
+
 ```json
 {
   "task_type": "btc_whale_report",
@@ -374,7 +362,8 @@ Example escrow order
   "refund_rule": "refund_if_any_required_check_fails"
 }
 ```
-Example failed verification result
+## Example failed verification result
+
 ```json
 {
   "deadline_valid": true,
