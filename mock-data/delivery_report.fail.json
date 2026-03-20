@@ -1,0 +1,14 @@
+{
+  "order_id": "escrow_001",
+  "seller_agent_id": "seller_agent_001",
+  "submitted_at": "2026-03-16T08:28:10Z",
+  "report_type": "btc_whale_report",
+  "signal_1": "A whale wallet accumulated 1,250 BTC within the last 30 minutes.",
+  "signal_2": "Two exchange outflows above 500 BTC were detected.",
+  "signal_3": "Dormant wallet reactivation occurred with 780 BTC transferred on-chain.",
+  "sources_used": [
+    "approved_source_a",
+    "unapproved_source_x"
+  ],
+  "summary": "Report was submitted on time, but one data source was outside the approved whitelist."
+}
