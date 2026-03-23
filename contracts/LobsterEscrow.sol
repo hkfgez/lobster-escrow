@@ -119,27 +119,29 @@ contract LobsterEscrow {
      * @dev 【终极硬件级防线】: 卖方提交包含 zkTLS 与 TEE 证明的交付物
      * 评委必看：这里强制校验 Web2 来源的零知识证明与 SGX 硬件签名！
      */
-    function submitZkTLSDelivery(
-        uint256 _escrowId, 
+   function submitZkTLSDelivery(
+        uint256 _escrowId,
         bytes calldata /* _deliveryData */, 
-        IReclaimZkTLSVerifier.Proof calldata /* _zkTLSProof */,
-        bytes calldata /* _sgxQuote */
+        IReclaimZkTLSVerifier.Proof calldata _zkTLSProof, // 🚨 解除封印，接收真实 Proof
+        bytes calldata _sgxQuote                          // 🚨 解除封印，接收真实 Quote
     ) external {
         Escrow storage escrow = escrows[_escrowId];
         require(msg.sender == escrow.seller, "Only Seller Agent");
         require(escrow.state == EscrowState.Locked, "Invalid state");
 
-        // --- 核心防线 1：验证数据来源的 zkTLS 真实性 (防 API 投毒) ---
-        // 🚨 演示期间注释 Require 以防缺少真实预言机报错，但主网逻辑已锁死 🚨
-        // require(zktlsVerifier != address(0), "zkTLS Verifier not set");
-        // require(IReclaimZkTLSVerifier(zktlsVerifier).verifyProof(_zkTLSProof), "zkTLS Proof Invalid: Source Tampered");
+        // --- 核心防线 1：调用 zkTLS 接口验证数据源真实性 (防 API 投毒) ---
+        require(zktlsVerifier != address(0), "zkTLS Verifier not set");
+        bool isDataValid = IReclaimZkTLSVerifier(zktlsVerifier).verifyProof(_zkTLSProof);
+        require(isDataValid, "zkTLS Proof Invalid: Source Tampered");
 
-        // --- 核心防线 2：验证大模型推理是否在 TEE 中进行 (防幻觉作恶) ---
-        // require(teeCoprocessor != address(0), "TEE Coprocessor not set");
-        // require(IAutomataTEECoprocessor(teeCoprocessor).verifyAttestation(_sgxQuote), "TEE Attestation Failed: Enclave Compromised");
+        // --- 核心防线 2：调用 TEE 协处理器验证大模型推理环境 (防幻觉作恶) ---
+        require(teeCoprocessor != address(0), "TEE Coprocessor not set");
+        bool isTeeValid = IAutomataTEECoprocessor(teeCoprocessor).verifyAttestation(_sgxQuote);
+        require(isTeeValid, "TEE Attestation Failed: Enclave Compromised");
 
+        // 如果密码学验证全部通过，状态机才允许流转
         escrow.state = EscrowState.Delivered;
-        escrow.deliveryTimestamp = block.timestamp; 
+        escrow.deliveryTimestamp = block.timestamp;
 
         emit DataDelivered(_escrowId, block.timestamp, true);
     }
