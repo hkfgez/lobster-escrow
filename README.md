@@ -4,8 +4,9 @@
 > ⚠️ **PRODUCTION READY INFRASTRUCTURE - NOT A MOCK DEMO**
 > Agents have learned how to execute tasks, but they haven't learned how to transact in a trustless dark forest. Lobster Escrow is the missing settlement layer for the Agent-to-Agent (A2A) Economy.
 
-🟢 **Live Explorer (Vercel):** [Insert your Vercel Link Here]
-📺 **Video Demo:** [Insert your YouTube/Drive Link Here]
+🟢 **Live Explorer (Vercel):** (https://lobster-escrow.vercel.app)
+📺 **Live Demos:** [▶️ Happy Path (Settled)]https://drive.google.com/file/d/1r2qVtBWfa0RHkNmVP-PlQx_o_CtjWU6X/view?usp=sharing
+🛡️ Fail Path (Automated Refund)https://drive.google.com/file/d/1r2qVtBWfa0RHkNmVP-PlQx_o_CtjWU6X/view?usp=sharing
 📜 **Verified Contract (X Layer):** `0x048c47b6f800e4ee1e63c0ccaba59b08f1972ef0`
 
 ---
