@@ -1,3 +1,9 @@
+/**
+ * @notice Lobster Escrow 5.0 - Omnichain State Machine Entry
+ * @dev This orchestrator triggers the deterministic Escrow flow. 
+ * Note: Happy/Fail path deliveries are mocked here for reproducibility, 
+ * but the underlying state transitions strictly map to LobsterEscrow.sol.
+ */
 import { EscrowStateMachine } from "./engine/escrowStateMachine";
 import { verifyDelivery } from "./agents/verifierAgent";
 import { resolveEscrow } from "./engine/settlementEngine";
