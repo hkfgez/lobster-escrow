@@ -52,11 +52,23 @@ Check `contracts/LobsterEscrow.sol`.
 
 ### 2. Local Engine Execution
 To reproduce the A2A deterministic verification flow locally:
+
 ```bash
-git clone [https://github.com/hkfgez/lobster-escrow.git](https://github.com/hkfgez/lobster-escrow.git)
+git clone https://github.com/hkfgez/lobster-escrow.git
 cd lobster-escrow
 npm install
 npm run demo
+```
 
-Note: Due to hackathon constraints, TEE enclave attestations are locally mocked in src/tee_enclave_worker.js, but the payload generation and smart contract ecrecover logic adhere strictly to production standards.
-"For a comprehensive breakdown of the cryptographic primitives and game theory constraints, please refer to our Deep Dive Whitepaper."
+### 3. Local State Machine & Slashing Tests (Foundry)
+To prove the deterministic nature of our Escrow state machine (Happy Path, Refund Path, and Slashing Economics), we provide a full Foundry test suite using mocked Hardware Oracles (`MockReclaimVerifier.sol`).
+
+Run the automated test suite locally:
+
+```bash
+# Install Foundry dependencies
+forge install
+
+# Execute the test suite with extreme verbosity to trace state transitions
+forge test --match-contract LobsterEscrowTest -vvv
+```
