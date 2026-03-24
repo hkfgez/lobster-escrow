@@ -80,4 +80,12 @@ You can run the entire zkTLS attestation and smart contract slashing flow locall
 ```bash
 docker-compose -f docker-compose.dev.yml up
 ```
+### 5. Chaos Engineering & Slashing Economics (防御作恶测试)
+**"A protocol is only as good as its ability to survive an attack."**
+
+Most hackathon projects only test the "Happy Path." In `Lobster Escrow`, we have hardcoded a strict Slashing Mechanism. To prove its robustness, we provide a Chaos Engineering simulation script that tests extreme malicious behavior:
+
+```bash
+python scripts/chaos_slashing_test.py
+```
 The system will automatically detect the absence of SGX chips, gracefully degrade to the Mock Enclave, and simulate the cryptographic proof generation.
