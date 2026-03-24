@@ -1,0 +1,28 @@
+# docker-compose.dev.yml
+# ==============================================================================
+# Lobster Escrow - Developer Simulation Environment (Hardware-Bypass Mode)
+# Use this to run the entire Agent-to-Agent escrow flow without Intel SGX chips.
+# ==============================================================================
+version: '3.8'
+
+services:
+  # 1. 模拟底层 TEE 硬件环境
+  tee-mock-enclave:
+    image: python:3.9-slim
+    container_name: lobster_tee_mock
+    volumes:
+      - ./mock_env:/app
+    working_dir: /app
+    command: python mock_tee_enclave.py
+    
+  # 2. 核心 Escrow Agent 引擎
+  lobster-agent-core:
+    image: python:3.9-slim
+    container_name: lobster_agent_engine
+    depends_on:
+      - tee-mock-enclave
+    environment:
+      - USE_MOCK_TEE=true  # 核心降级开关
+      - OKX_RPC_URL=https://rpc.xlayer.tech
+    # 假设你原本的入口是 main.py
+    # command: python main.py
