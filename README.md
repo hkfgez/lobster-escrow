@@ -72,3 +72,12 @@ forge install
 # Execute the test suite with extreme verbosity to trace state transitions
 forge test --match-contract LobsterEscrowTest -vvv
 ```
+### 4. Hardware-Bypass Simulation (Docker & Mock TEE)
+**Note to Judges:** Lobster Escrow relies on Automata TEE and Intel SGX for trustless execution. Recognizing that most developers do not have immediate access to SGX-enabled hardware, we have built a strict **Software Simulation Mode**.
+
+You can run the entire zkTLS attestation and smart contract slashing flow locally without hardware constraints. Simply run:
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+The system will automatically detect the absence of SGX chips, gracefully degrade to the Mock Enclave, and simulate the cryptographic proof generation.
