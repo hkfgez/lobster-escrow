@@ -119,7 +119,7 @@ contract LobsterEscrow {
      * @dev 【终极硬件级防线】: 卖方提交包含 zkTLS 与 TEE 证明的交付物
      * 评委必看：这里强制校验 Web2 来源的零知识证明与 SGX 硬件签名！
      */
-   function submitZkTLSDelivery(
+function submitZkTLSDelivery(
         uint256 _escrowId,
         bytes calldata /* _deliveryData */, 
         IReclaimZkTLSVerifier.Proof calldata _zkTLSProof, // 🚨 解除封印，接收真实 Proof
